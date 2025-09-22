@@ -15,15 +15,16 @@ WORKDIR /app
 
 COPY . .
 
+# Сначала генерируем ключ БЕЗ базы данных
+RUN cp .env.example .env
+RUN php artisan key:generate --force
+
+# Затем устанавливаем зависимости
 RUN composer install --no-dev --no-scripts --optimize-autoloader
 RUN npm ci && npm run build
 
 # Создаем базу и выполняем миграции
 RUN touch database/database.sqlite
 RUN php artisan migrate --force
-RUN php artisan key:generate --force
-
-# Используем file сессии чтобы избежать проблем с БД
-RUN echo "SESSION_DRIVER=file" >> .env
 
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=10000"]
