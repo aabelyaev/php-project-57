@@ -15,15 +15,18 @@ WORKDIR /app
 
 COPY . .
 
-# Сначала генерируем ключ БЕЗ базы данных
+# 1. Сначала устанавливаем зависимости Composer
+RUN composer install --no-dev --no-scripts --optimize-autoloader
+
+# 2. Затем генерируем ключ (теперь vendor/autoload.php существует)
 RUN cp .env.example .env
 RUN php artisan key:generate --force
 
-# Затем устанавливаем зависимости
-RUN composer install --no-dev --no-scripts --optimize-autoloader
-RUN npm ci && npm run build
+# 3. Устанавливаем и собираем фронтенд
+RUN npm ci
+RUN npm run build
 
-# Создаем базу и выполняем миграции
+# 4. Создаем базу и выполняем миграции
 RUN touch database/database.sqlite
 RUN php artisan migrate --force
 
