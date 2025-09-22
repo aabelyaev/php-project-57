@@ -1,29 +1,31 @@
-FROM php
+FROM php:8.2-cli
 
 RUN apt-get update && apt-get install -y \
-    libpq-dev \
-    libzip-dev
-RUN docker-php-ext-install pdo pdo_pgsql zip
-# RUN docker-php-ext-configure pdo pdo_pgsql
+    libzip-dev \
+    sqlite3 \
+    libsqlite3-dev \
+    nodejs \
+    npm
 
-RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
-    && php composer-setup.php --install-dir=/usr/local/bin --filename=composer \
-    && php -r "unlink('composer-setup.php');"
+RUN docker-php-ext-install pdo pdo_sqlite zip
 
-RUN curl -fsSL https://nodistro.nodesource.com/setup_22.12.0 | bash -
-RUN apt-get install -y nodejs npm
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /app
 
+# Копируем только необходимые для сборки файлы
+COPY package*.json composer.* ./
+COPY resources/ resources/
+COPY vite.config.js ./
+
+# Устанавливаем и собираем
+RUN npm ci && npm run build
+
+# Теперь копируем все остальные файлы
 COPY . .
 
-RUN composer install
-RUN cp .env.example .env
-RUN php artisan key:generate
-RUN npm install
-RUN npm ci
-RUN npm run build
+RUN composer install --no-dev --no-scripts --optimize-autoloader
+RUN cp .env.example .env && php artisan key:generate --force
+RUN touch database/database.sqlite
 
-RUN > database/database.sqlite
-
-CMD ["bash", "-c", "php artisan migrate:fresh --force --seed && make start"]
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=10000"]
