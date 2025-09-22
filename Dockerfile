@@ -10,20 +10,16 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && php composer-setup.php --install-dir=/usr/local/bin --filename=composer \
     && php -r "unlink('composer-setup.php');"
 
-RUN curl -fsSL https://nodistro.nodesource.com/setup_22.12.0 | bash -
-RUN apt-get install -y nodejs npm
+RUN curl -sL https://deb.nodesource.com/setup_20.x | bash -
+RUN apt-get install -y nodejs
 
 WORKDIR /app
 
 COPY . .
 
 RUN composer install
-RUN cp .env.example .env
-RUN php artisan key:generate
 RUN npm install
 RUN npm ci
 RUN npm run build
 
-RUN > database/database.sqlite
-
-CMD ["bash", "-c", "php artisan migrate:fresh --force --seed && make start"]
+CMD ["bash", "-c", "php artisan migrate --force && make start"]
