@@ -13,6 +13,9 @@ setup:
 	npm ci
 	npm run build
 
+frontend-dev:
+	npm run	dev
+
 setup-start:
 	make setup
 	make start
