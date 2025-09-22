@@ -20,6 +20,7 @@ COPY . .
 RUN composer install
 RUN cp .env.example .env
 RUN php artisan key:generate
+RUN npm install
 RUN npm ci
 RUN npm run build
 
