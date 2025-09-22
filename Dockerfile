@@ -1,33 +1,29 @@
-FROM php:8.2-cli
+FROM php
 
 RUN apt-get update && apt-get install -y \
-    libzip-dev \
-    sqlite3 \
-    libsqlite3-dev \
-    nodejs \
-    npm
+    libpq-dev \
+    libzip-dev
+RUN docker-php-ext-install pdo pdo_pgsql zip
+# RUN docker-php-ext-configure pdo pdo_pgsql
 
-RUN docker-php-ext-install pdo pdo_sqlite zip
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
+    && php composer-setup.php --install-dir=/usr/local/bin --filename=composer \
+    && php -r "unlink('composer-setup.php');"
 
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+RUN curl -fsSL https://nodistro.nodesource.com/setup_22.12.0 | bash -
+RUN apt-get install -y nodejs npm
 
 WORKDIR /app
 
 COPY . .
 
-# 1. Сначала устанавливаем зависимости Composer
-RUN composer install --no-dev --no-scripts --optimize-autoloader
-
-# 2. Затем генерируем ключ (теперь vendor/autoload.php существует)
+RUN composer install
 RUN cp .env.example .env
-RUN php artisan key:generate --force
-
-# 3. Устанавливаем и собираем фронтенд
+RUN php artisan key:generate
+RUN npm install
 RUN npm ci
 RUN npm run build
 
-# 4. Создаем базу и выполняем миграции
-RUN touch database/database.sqlite
-RUN php artisan migrate --force
+RUN > database/database.sqlite
 
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=10000"]
+CMD ["bash", "-c", "php artisan migrate:fresh --force --seed && make start"]
