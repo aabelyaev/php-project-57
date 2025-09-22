@@ -8,4 +8,14 @@ export default defineConfig({
             refresh: true,
         }),
     ],
+    build: {
+        manifest: true,
+        outDir: 'public/build',
+        assetsDir: 'assets',
+        emptyOutDir: true,
+    },
+    server: {
+        host: '0.0.0.0',
+        port: 5173,
+    },
 });
