@@ -19,7 +19,7 @@ WORKDIR /app
 COPY . .
 
 # Копируем .env.production или создаем .env
-COPY .env.production .env
+COPY .env.example .env
 
 # Генерируем ключ приложения
 RUN php artisan key:generate
