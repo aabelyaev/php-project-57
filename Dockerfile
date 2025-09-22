@@ -21,7 +21,7 @@ RUN composer install
 RUN cp .env.example .env
 RUN php artisan key:generate
 RUN npm ci
-RUN npm run build
+RUN  npm run dev
 
 RUN > database/database.sqlite
 
