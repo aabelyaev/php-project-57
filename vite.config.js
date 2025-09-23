@@ -9,9 +9,9 @@ export default defineConfig({
         }),
     ],
     server: {
-        host: '0.0.0.0',
+        host: 'php-project-57-8905.onrender.com',
         hmr: {
-            host: 'localhost',
+            host: 'php-project-57-8905.onrender.com',
         },
     },
 });
