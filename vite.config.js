@@ -8,4 +8,10 @@ export default defineConfig({
             refresh: true,
         }),
     ],
+    server: {
+        host: 'php-project-57-8905.onrender.com',
+        hmr: {
+            host: 'php-project-57-8905.onrender.com',
+        },
+    },
 });
