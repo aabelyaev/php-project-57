@@ -1,26 +1,28 @@
-FROM php:8.2-fpm
+FROM php
 
 RUN apt-get update && apt-get install -y \
-    libpq-dev libzip-dev git curl unzip \
-    && docker-php-ext-install pdo pdo_pgsql zip
+    libpq-dev \
+    libzip-dev
+RUN docker-php-ext-install pdo pdo_pgsql zip
+# RUN docker-php-ext-configure pdo pdo_pgsql
 
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
+    && php composer-setup.php --install-dir=/usr/local/bin --filename=composer \
+    && php -r "unlink('composer-setup.php');"
+
+RUN curl -fsSL https://nodistro.nodesource.com/setup_22.12.0 | bash -
+RUN apt-get install -y nodejs npm
 
 WORKDIR /app
 
-# Копируем все файлы сразу
 COPY . .
 
-# Устанавливаем зависимости с отключенными скриптами
-RUN composer install --no-dev --no-scripts
-
-# Вручную запускаем необходимые команды
-RUN composer dump-autoload --optimize
-
-# Создаем .env и генерируем ключ
+RUN composer install
 RUN cp .env.example .env
 RUN php artisan key:generate
+RUN npm ci
+RUN npm run build
 
-RUN touch database/database.sqlite
+RUN > database/database.sqlite
 
-CMD ["bash", "-c", "php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=8000"]
+CMD ["bash", "-c", "php artisan migrate:fresh --force --seed && make start"]
