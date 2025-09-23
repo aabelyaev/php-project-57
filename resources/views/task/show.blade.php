@@ -3,7 +3,7 @@
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             <div class="flex justify-start">
                 <div class="flex items-center">
-                    {{ __('Просмотр задачи: ') . $task->name }}
+                    <span>{{ __("Просмотр задачи: {$task->name}") }}</span>
                 </div>
                 <div class="w-20 ml-2">
                     <a href="{{ route('tasks.edit', $task) }}"

@@ -6,7 +6,52 @@
     </x-slot>
 
     <div class="flex justify-center">
-        <div class="mt-16 bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-[80%] overflow-hidden transition-all duration-300 hover:shadow-3xl animate-fade-in">
+        <div id="search-bar"
+             class="w-auto max-w-[86%] mt-8 p-6 bg-white dark:bg-gray-800 rounded-xl shadow-xl overflow-hidden transition-all duration-300 hover:shadow-3xl animate-fade-in">
+            <form method="GET" action="{{ route('tasks.index') }}" class="flex items-center justify-center">
+                <select name="filter[status_id]" id="filter[status_id]"
+                        class="max-w-[36%] mt-1 mr-4 block border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
+                    <option value="">Статус</option>
+                    @foreach($statuses as $status)
+                        @if(request()->input('filter.status_id') === (string) $status->id)
+                            <option selected="selected" value="{{ $status->id }}">{{ $status->name }}</option>
+                        @else
+                            <option value="{{ $status->id }}">{{ $status->name }}</option>
+                        @endif
+                    @endforeach
+                </select>
+
+                <select name="filter[created_by_id]" id="filter[created_by_id]"
+                        class="max-w-[36%] mt-1 mr-4 block border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
+                    <option value="">Автор</option>
+                    @foreach($users as $user)
+                        @if(request()->input('filter.created_by_id') === (string) $user->id)
+                            <option selected="selected" value="{{ $user->id }}">{{ $user->name }}</option>
+                        @else
+                            <option value="{{ $user->id }}">{{ $user->name }}</option>
+                        @endif
+                    @endforeach
+                </select>
+
+                <select name="filter[assigned_to_id]" id="filter[assigned_to_id]"
+                        class="max-w-[36%] mt-1 mr-4 block border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
+                    <option value="">Исполнитель</option>
+                    @foreach($users as $user)
+                        @if(request()->input('filter.assigned_to_id') === (string) $user->id)
+                            <option selected="selected" value="{{ $user->id }}">{{ $user->name }}</option>
+                        @else
+                            <option value="{{ $user->id }}">{{ $user->name }}</option>
+                        @endif
+                    @endforeach
+                </select>
+
+                <x-primary-button>Применить</x-primary-button>
+            </form>
+        </div>
+    </div>
+
+    <div class="flex justify-center">
+        <div class="mt-8 bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-[80%] overflow-hidden transition-all duration-300 hover:shadow-3xl animate-fade-in">
             <div class="p-6">
                 <div class="flex justify-between">
                     <div class="w-[90%] flex justify-between items-center text-left space-x-4 mb-2 p-3 rounded-lg">
@@ -102,7 +147,7 @@
 
         @auth
             <a href="{{ route('tasks.create') }}"
-               class="flex w-[5%] items-center mt-16 ml-4 bg-white dark:bg-gray-800 rounded-xl shadow-2xl overflow-hidden transition ease-in-out duration-150 hover:shadow-3xl animate-fade-in tracking-widest hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 disabled:opacity-25">
+               class="flex w-[5%] items-center mt-8 ml-4 bg-white dark:bg-gray-800 rounded-xl shadow-2xl overflow-hidden transition ease-in-out duration-150 hover:shadow-3xl animate-fade-in tracking-widest hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 disabled:opacity-25">
                 <svg class="w-[40%] mx-auto fill-indigo-800" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                     <!--!Font Awesome Free v7.0.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
                     <path d="M256 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 160-160 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l160 0 0 160c0 17.7 14.3 32 32 32s32-14.3 32-32l0-160 160 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-160 0 0-160z"/>

@@ -4,10 +4,12 @@ start:
 	php artisan serve --host=0.0.0.0 --port=$(PORT)
 
 setup:
-	cp .env.example .env
 	composer install
+	cp -n .env.example .env
+	touch database/database.sqlite
 	php artisan key:generate
-	npm install
+	php artisan migrate
+	php artisan db:seed
 	npm ci
 	npm run build
 

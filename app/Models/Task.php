@@ -31,6 +31,6 @@ class Task extends Model
 
     public function labels(): BelongsToMany
     {
-        return $this->belongsToMany(Label::class);
+        return $this->belongsToMany(Label::class)->withTimestamps();
     }
 }

@@ -149,7 +149,6 @@ class LabelTest extends TestCase
     public function test_user_cannot_delete_label_if_it_is_associated_with_task(): void
     {
         $taskStatus = TaskStatus::factory()->create();
-        $assignedUser = User::factory()->create();
 
         $this
             ->actingAs($this->user)
@@ -165,7 +164,7 @@ class LabelTest extends TestCase
                 'description' => 'Some description',
                 'status_id' => $taskStatus->id,
                 'created_by_id' => $this->user->id,
-                'assigned_to_id' => $assignedUser->id,
+                'assigned_to_id' => $this->user->id,
                 'labels' => [1],
             ]);
 
