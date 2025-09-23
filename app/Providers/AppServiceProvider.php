@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,8 +21,17 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(UrlGenerator $url): void
     {
-        if (env('APP_ENV') == 'production') {
-            $url->forceScheme('https');
+        // Более надежная проверка окружения
+        if ($this->app->environment('production')) {
+            URL::forceScheme('https');
+
+            // Дополнительно для генерации URL
+            $this->app['request']->server->set('HTTPS', 'on');
         }
+
+        // Или для любого окружения кроме local
+        // if (!$this->app->environment('local')) {
+        //     URL::forceScheme('https');
+        // }
     }
 }
