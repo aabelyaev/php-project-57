@@ -2,9 +2,8 @@
 
 namespace App\Providers;
 
-use Illuminate\Routing\Url;
-use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,14 +18,20 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(UrlGenerator $url): void
+    public function boot(): void
     {
-        // Принудительное использование HTTPS для всех URL
-        if (config('app.env') === 'production') {
+        // Вариант 1: Только для production
+        /*if ($this->app->environment('production')) {
             URL::forceScheme('https');
-        }
+        }*/
 
-        // Или всегда использовать HTTPS
-        URL::forceScheme('https');
+        // ИЛИ Вариант 2: Всегда использовать HTTPS (уберите вариант 1)
+        // URL::forceScheme('https');
+
+        // ИЛИ Вариант 3: Для production и если APP_URL начинается с https
+         if ($this->app->environment('production') ||
+            (env('APP_URL') && str_starts_with(env('APP_URL'), 'https://'))) {
+           URL::forceScheme('https');
+         }
     }
 }
