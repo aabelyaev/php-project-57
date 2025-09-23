@@ -2,12 +2,24 @@
 
 namespace App\Providers;
 
+use Illuminate\Routing\Url;
 use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    public function boot(): void
+    /**
+     * Register any application services.
+     */
+    public function register(): void
+    {
+        //
+    }
+
+    /**
+     * Bootstrap any application services.
+     */
+    public function boot(UrlGenerator $url): void
     {
         // Принудительное использование HTTPS для всех URL
         if (config('app.env') === 'production') {
