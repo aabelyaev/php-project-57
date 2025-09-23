@@ -8,4 +8,18 @@ export default defineConfig({
             refresh: true,
         }),
     ],
+    server: {
+        // 005 enabling the HTTPS
+        https: true,
+        // 006 setting the proxy with Laravel as target (origin)
+        proxy: {
+            '^(?!(\/\@vite|\/resources|\/node_modules))': {
+                target: `http://${host}:${port}`,
+            }
+        },
+        host,
+        port: 5173,
+        // 007 be sure that you have the Hot Module Replacement
+        hmr: { host },
+    }
 });
