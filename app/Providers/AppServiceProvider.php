@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Routing\Url;
 use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\ServiceProvider;
 
@@ -20,6 +21,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        if (config('app.env') === 'production') {
+            URL::forceScheme('https');
+        }
         URL::forceScheme('https');
     }
 }
