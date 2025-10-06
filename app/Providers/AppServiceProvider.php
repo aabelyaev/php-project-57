@@ -12,6 +12,8 @@ class AppServiceProvider extends ServiceProvider
         // Для продакшена всегда использовать HTTPS
         if ($this->app->environment('production')) {
             URL::forceScheme('https');
+        } else {
+            URL::forceScheme('https');
         }
 
         // Или принудительно всегда (как в вашем коде)
