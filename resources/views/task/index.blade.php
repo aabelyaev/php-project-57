@@ -85,7 +85,7 @@
                             <td class="px-4 py-2 text-sm">{{ $task->createdBy->name }}</td>
                             <td class="px-4 py-2 text-sm">{{ $task->assignedTo->name ?? '' }}</td>
                             <td class="px-4 py-2 text-sm">{{ Carbon\Carbon::createFromDate($task->created_at)->format('d.m.Y') }}</td>
-                            <td>
+                            <td class="px-4 py-2 text-sm">
                                 @auth
                                     @can('delete', $task)
                                         <a rel="nofollow" data-confirm="Вы уверены?" data-method="delete"

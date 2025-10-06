@@ -33,7 +33,7 @@
                             <td class="px-4 py-2 text-sm">{{ $label->name }}</td>
                             <td class="px-4 py-2 text-sm">{{ $label->description }}</td>
                             <td class="px-4 py-2 text-sm">{{ Carbon\Carbon::createFromDate($label->created_at)->format('d.m.Y') }}</td>
-                            <td>
+                            <td class="px-4 py-2 text-sm">
                                 @auth
                                     <a rel="nofollow" data-confirm="Вы уверены?" data-method="delete"
                                        class="text-red-600 hover:text-red-900"
