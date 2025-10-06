@@ -8,9 +8,6 @@ use Illuminate\Notifications\Notifiable;
 
 /**
  * @property int $id
- * @property string $name
- * @property string|null $description
- * @property-read \Illuminate\Database\Eloquent\Collection|Task[] $tasks
  */
 class User extends Authenticatable
 {
