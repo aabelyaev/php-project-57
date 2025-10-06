@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique()->isNotEmpty();
+            $table->string('name')->unique();
             $table->text('description')->nullable();
             $table->foreignId('status_id')->constrained('task_statuses', 'id');
             $table->foreignId('created_by_id')->constrained('users', 'id');
