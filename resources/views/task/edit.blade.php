@@ -14,17 +14,16 @@
 
                     <div>
                         <x-input-label for="name" :value="__('Имя')"/>
-                        <x-text-input id="name" name="name" type="text" value="{{ $task->name }}"
+                        <x-text-input id="name" name="name" type="text"
+                                      value="{{ old('name', $task->name) }}"
                                       class="mt-1 block w-full" required autofocus/>
                         <x-input-error class="mt-2" :messages="$errors->get('name')"/>
                     </div>
 
                     <div>
                         <x-input-label for="description" :value="__('Описание')"/>
-                        <x-textarea-input id="description" name="description" :value="$task->description"
-                                          cols="30"
-                                          rows="6"
-                                          class="mt-1 block w-full"></x-textarea-input>
+                        <x-textarea-input id="description" name="description"
+                                          class="mt-1 block w-full">{{ old('description', $task->description) }}</x-textarea-input>
                         <x-input-error class="mt-2" :messages="$errors->get('description')"/>
                     </div>
 
@@ -34,7 +33,7 @@
                                 class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
                             @foreach($statuses as $status)
                                 <option value="{{ $status->id }}"
-                                        @if($status->id === $task->status->id) selected @endif>
+                                        @if(old('status_id', $task->status_id) == $status->id) selected @endif>
                                     {{ $status->name }}
                                 </option>
                             @endforeach
@@ -49,7 +48,7 @@
                             <option value="">{{ __('Не назначен') }}</option>
                             @foreach($users as $user)
                                 <option value="{{ $user->id }}"
-                                        @if(optional($task->assignedTo)->id === $user->id) selected @endif>
+                                        @if(old('assigned_to_id', $task->assigned_to_id) == $user->id) selected @endif>
                                     {{ $user->name }}
                                 </option>
                             @endforeach
@@ -63,7 +62,7 @@
                                 class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
                             @foreach($labels as $label)
                                 <option value="{{ $label->id }}"
-                                        @if($task->labels->contains($label->id)) selected @endif>
+                                        @if(in_array($label->id, old('labels', $task->labels->pluck('id')->toArray()))) selected @endif>
                                     {{ $label->name }}
                                 </option>
                             @endforeach
