@@ -31,13 +31,12 @@
                     <div>
                         <x-input-label for="status_id" :value="__('Статус')"/>
                         <select id="status_id" name="status_id"
-                                class="mt-1 block border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
+                                class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
                             @foreach($statuses as $status)
-                                @if($status->id === $task->status->id)
-                                    <option selected="selected" value="{{ $status->id }}">{{ $status->name }}</option>
-                                @else
-                                    <option value="{{ $status->id }}">{{ $status->name }}</option>
-                                @endif
+                                <option value="{{ $status->id }}"
+                                        @if($status->id === $task->status->id) selected @endif>
+                                    {{ $status->name }}
+                                </option>
                             @endforeach
                         </select>
                         <x-input-error class="mt-2" :messages="$errors->get('status_id')"/>
@@ -46,29 +45,27 @@
                     <div>
                         <x-input-label for="assigned_to_id" :value="__('Исполнитель')"/>
                         <select id="assigned_to_id" name="assigned_to_id"
-                                class="mt-1 block border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
-                            <option value=""></option>
+                                class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
+                            <option value="">{{ __('Не назначен') }}</option>
                             @foreach($users as $user)
-                                @if($user->id === optional($task->assignedTo)->id)
-                                    <option selected="selected" value="{{ $user->id }}">{{ $user->name }}</option>
-                                @else
-                                    <option value="{{ $user->id }}">{{ $user->name }}</option>
-                                @endif
+                                <option value="{{ $user->id }}"
+                                        @if(optional($task->assignedTo)->id === $user->id) selected @endif>
+                                    {{ $user->name }}
+                                </option>
                             @endforeach
                         </select>
                         <x-input-error class="mt-2" :messages="$errors->get('assigned_to_id')"/>
                     </div>
 
                     <div>
-                        <x-input-label for="labels[]" :value="__('Метки')"/>
-                        <select id="labels[]" name="labels[]" multiple=""
-                                class="mt-1 block border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
+                        <x-input-label for="labels" :value="__('Метки')"/>
+                        <select id="labels" name="labels[]" multiple
+                                class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
                             @foreach($labels as $label)
-                                @if($task->labels()->where('label_id', $label->id)->exists())
-                                    <option selected="selected" value="{{ $label->id }}">{{ $label->name }}</option>
-                                @else
-                                    <option value="{{ $label->id }}">{{ $label->name }}</option>
-                                @endif
+                                <option value="{{ $label->id }}"
+                                        @if($task->labels->contains($label->id)) selected @endif>
+                                    {{ $label->name }}
+                                </option>
                             @endforeach
                         </select>
                         <x-input-error class="mt-2" :messages="$errors->get('labels')"/>
