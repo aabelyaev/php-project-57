@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\TaskStatus;
 use App\Models\User;
+use App\Models\Label;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -22,7 +23,7 @@ class LabelTest extends TestCase
 
     public function testLabelsIsDisplayed(): void
     {
-        $response = $this->get('/labels');
+        $response = $this->get(route('labels.index'));
 
         $response->assertOk();
     }
@@ -31,7 +32,7 @@ class LabelTest extends TestCase
     {
         $response = $this
             ->actingAs($this->user)
-            ->get('/labels/create');
+            ->get(route('labels.create'));
 
         $response->assertOk();
     }
@@ -44,12 +45,12 @@ class LabelTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->post('/labels', [
+            ->post(route('labels.store'), [
                 'name' => 'Testing',
                 'description' => 'Some description',
             ]);
 
-        $response->assertRedirect('/labels');
+        $response->assertRedirect(route('labels.index'));
 
         $this->assertDatabaseHas('labels', [
             'name' => 'Testing',
@@ -60,45 +61,35 @@ class LabelTest extends TestCase
     {
         $this
             ->actingAs($this->user)
-            ->post('/labels', [
+            ->post(route('labels.store'), [
                 'name' => 'Testing',
                 'description' => 'Some description',
             ]);
 
         $response = $this
             ->actingAs($this->user)
-            ->post('/labels', [
+            ->post(route('labels.store'), [
                 'name' => 'Testing',
                 'description' => 'Some description',
             ]);
 
-        $response->assertRedirectBack();
+        $response->assertInvalid(['name']);
     }
 
     public function testLabelEditFormIsDisplayed(): void
     {
-        $this
-            ->actingAs($this->user)
-            ->post('/labels', [
-                'name' => 'Testing',
-                'description' => 'Some description',
-            ]);
+        $label = Label::factory()->create();
 
         $response = $this
             ->actingAs($this->user)
-            ->get('/labels/1/edit');
+            ->get(route('labels.edit', $label));
 
         $response->assertOk();
     }
 
     public function testUserCanUpdateLabel(): void
     {
-        $this
-            ->actingAs($this->user)
-            ->post('/labels', [
-                'name' => 'Testing',
-                'description' => 'Some description',
-            ]);
+        $label = Label::factory()->create(['name' => 'Testing']);
 
         $this->assertDatabaseHas('labels', [
             'name' => 'Testing',
@@ -106,12 +97,12 @@ class LabelTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->patch('/labels/1', [
+            ->patch(route('labels.update', $label), [
                 'name' => 'Review',
                 'description' => 'Some description',
             ]);
 
-        $response->assertRedirect('/labels');
+        $response->assertRedirect(route('labels.index'));
 
         $this->assertDatabaseMissing('labels', [
             'name' => 'Testing',
@@ -124,62 +115,51 @@ class LabelTest extends TestCase
 
     public function testUserCanDeleteLabel(): void
     {
-        $this
-            ->actingAs($this->user)
-            ->post('/labels', [
-                'name' => 'Testing',
-                'description' => 'Some description',
-            ]);
+        $label = Label::factory()->create();
 
         $this->assertDatabaseHas('labels', [
-            'id' => '1',
+            'id' => $label->id,
         ]);
 
         $response = $this
             ->actingAs($this->user)
-            ->delete('/labels/1');
+            ->delete(route('labels.destroy', $label));
 
-        $response->assertRedirect('/labels');
+        $response->assertRedirect(route('labels.index'));
 
         $this->assertDatabaseMissing('labels', [
-            'id' => '1',
+            'id' => $label->id,
         ]);
     }
 
     public function testUserCannotDeleteLabelIfItIsAssociatedWithTask(): void
     {
         $taskStatus = TaskStatus::factory()->create();
+        $label = Label::factory()->create();
 
         $this
             ->actingAs($this->user)
-            ->post('/labels', [
-                'name' => 'Testing',
-                'description' => 'Some description',
-            ]);
-
-        $this
-            ->actingAs($this->user)
-            ->post('/tasks', [
+            ->post(route('tasks.store'), [
                 'name' => 'Run tests',
                 'description' => 'Some description',
                 'status_id' => $taskStatus->id,
                 'created_by_id' => $this->user->id,
                 'assigned_to_id' => $this->user->id,
-                'labels' => [1],
+                'labels' => [$label->id],
             ]);
 
         $this->assertDatabaseHas('labels', [
-            'id' => '1',
+            'id' => $label->id,
         ]);
 
         $response = $this
             ->actingAs($this->user)
-            ->delete('/labels/1');
+            ->delete(route('labels.destroy', $label));
 
-        $response->assertRedirectBack();
+        $response->assertRedirect();
 
         $this->assertDatabaseHas('labels', [
-            'id' => '1',
+            'id' => $label->id,
         ]);
     }
 }

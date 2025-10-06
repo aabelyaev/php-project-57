@@ -3,6 +3,8 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use App\Models\TaskStatus;
+use App\Models\Task;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -21,7 +23,7 @@ class TaskStatusTest extends TestCase
 
     public function testTaskStatusesIsDisplayed(): void
     {
-        $response = $this->get('/task_statuses');
+        $response = $this->get(route('task_statuses.index'));
 
         $response->assertOk();
     }
@@ -30,7 +32,7 @@ class TaskStatusTest extends TestCase
     {
         $response = $this
             ->actingAs($this->user)
-            ->get('/task_statuses/create');
+            ->get(route('task_statuses.create'));
 
         $response->assertOk();
     }
@@ -39,11 +41,11 @@ class TaskStatusTest extends TestCase
     {
         $response = $this
             ->actingAs($this->user)
-            ->post('/task_statuses', [
+            ->post(route('task_statuses.store'), [
                 'name' => 'in testing',
             ]);
 
-        $response->assertRedirect('/task_statuses');
+        $response->assertRedirect(route('task_statuses.index'));
 
         $this->assertDatabaseHas('task_statuses', [
             'name' => 'in testing',
@@ -52,49 +54,39 @@ class TaskStatusTest extends TestCase
 
     public function testUserCannotDuplicateTaskStatus(): void
     {
-        $this
-            ->actingAs($this->user)
-            ->post('/task_statuses', [
-                'name' => 'in testing',
-            ]);
+        TaskStatus::factory()->create(['name' => 'in testing']);
 
         $response = $this
             ->actingAs($this->user)
-            ->post('/task_statuses', [
+            ->post(route('task_statuses.store'), [
                 'name' => 'in testing',
             ]);
 
-        $response->assertRedirectBack();
+        $response->assertInvalid(['name']);
     }
 
     public function testTaskStatusEditFormIsDisplayed(): void
     {
-        $this
-            ->actingAs($this->user)
-            ->post('/task_statuses', [
-                'name' => 'in testing',
-            ]);
+        $taskStatus = TaskStatus::factory()->create();
 
-        $response = $this->get('/task_statuses/1/edit');
+        $response = $this
+            ->actingAs($this->user)
+            ->get(route('task_statuses.edit', $taskStatus));
 
         $response->assertOk();
     }
 
     public function testUserCanUpdateTaskStatus(): void
     {
-        $this
-            ->actingAs($this->user)
-            ->post('/task_statuses', [
-                'name' => 'in testing',
-            ]);
+        $taskStatus = TaskStatus::factory()->create(['name' => 'in testing']);
 
         $response = $this
             ->actingAs($this->user)
-            ->patch('/task_statuses/1', [
+            ->patch(route('task_statuses.update', $taskStatus), [
                 'name' => 'in reviewing',
             ]);
 
-        $response->assertRedirect('/task_statuses');
+        $response->assertRedirect(route('task_statuses.index'));
 
         $this->assertDatabaseHas('task_statuses', [
             'name' => 'in reviewing',
@@ -107,57 +99,44 @@ class TaskStatusTest extends TestCase
 
     public function testUserCanDeleteTaskStatus(): void
     {
-        $this
-            ->actingAs($this->user)
-            ->post('/task_statuses', [
-                'name' => 'in testing',
-            ]);
+        $taskStatus = TaskStatus::factory()->create();
 
         $this->assertDatabaseHas('task_statuses', [
-            'id' => '1',
+            'id' => $taskStatus->id,
         ]);
 
         $response = $this
             ->actingAs($this->user)
-            ->delete('/task_statuses/1');
+            ->delete(route('task_statuses.destroy', $taskStatus));
 
-        $response->assertRedirect('/task_statuses');
+        $response->assertRedirect(route('task_statuses.index'));
 
         $this->assertDatabaseMissing('task_statuses', [
-            'id' => '1',
+            'id' => $taskStatus->id,
         ]);
     }
 
     public function testUserCannotDeleteTaskStatusIfItIsAssociatedWithTask(): void
     {
-        $this
-            ->actingAs($this->user)
-            ->post('/task_statuses', [
-                'name' => 'in testing',
-            ]);
-
-        $this
-            ->actingAs($this->user)
-            ->post('/tasks', [
-                'name' => 'Run tests',
-                'description' => 'Some description',
-                'status_id' => '1',
-                'created_by_id' => $this->user->id,
-                'assigned_to_id' => $this->user->id,
-            ]);
+        $taskStatus = TaskStatus::factory()->create();
+        $task = Task::factory()->create([
+            'status_id' => $taskStatus->id,
+            'created_by_id' => $this->user->id,
+            'assigned_to_id' => $this->user->id,
+        ]);
 
         $this->assertDatabaseHas('task_statuses', [
-            'id' => '1',
+            'id' => $taskStatus->id,
         ]);
 
         $response = $this
             ->actingAs($this->user)
-            ->delete('/task_statuses/1');
+            ->delete(route('task_statuses.destroy', $taskStatus));
 
-        $response->assertRedirectBack();
+        $response->assertRedirect();
 
         $this->assertDatabaseHas('task_statuses', [
-            'id' => '1',
+            'id' => $taskStatus->id,
         ]);
     }
 }

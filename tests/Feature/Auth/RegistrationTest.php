@@ -11,14 +11,14 @@ class RegistrationTest extends TestCase
 
     public function testRegistrationScreenCanBeRendered(): void
     {
-        $response = $this->get('/register');
+        $response = $this->get(route('register'));
 
         $response->assertStatus(200);
     }
 
     public function testNewUsersCanRegister(): void
     {
-        $response = $this->post('/register', [
+        $response = $this->post(route('register'), [
             'name' => 'Test User',
             'email' => 'test@example.com',
             'password' => 'password',

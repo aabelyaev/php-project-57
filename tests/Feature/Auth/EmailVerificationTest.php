@@ -17,7 +17,7 @@ class EmailVerificationTest extends TestCase
     {
         $user = User::factory()->unverified()->create();
 
-        $response = $this->actingAs($user)->get('/verify-email');
+        $response = $this->actingAs($user)->get(route('verification.notice'));
 
         $response->assertStatus(200);
     }
@@ -38,7 +38,7 @@ class EmailVerificationTest extends TestCase
 
         Event::assertDispatched(Verified::class);
         $this->assertTrue($user->fresh()->hasVerifiedEmail());
-        $response->assertRedirect('/' . '?verified=1');
+        $response->assertRedirect(route('dashboard') . '?verified=1');
     }
 
     public function testEmailIsNotVerifiedWithInvalidHash(): void
