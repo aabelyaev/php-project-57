@@ -96,7 +96,12 @@ class TaskController extends Controller
     public function update(UpdateTaskRequest $request, Task $task): RedirectResponse
     {
         $task->update($request->validated());
-        $task->labels()->sync($request->get('labels'));
+
+        // Безопасная синхронизация меток
+        $labels = $request->get('labels', []);
+        $task->labels()->sync(
+            collect($labels)->filter()->unique()->toArray()
+        );
 
         flash(__('flashes.tasks.update.success'))->success();
 
