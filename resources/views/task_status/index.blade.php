@@ -11,7 +11,7 @@
                 @endauth
             </div>
 
-            <div class="overflow-x-auto bg-white shadow rounded">
+            <div style="margin-top: 20px" class="overflow-x-auto bg-white shadow rounded">
                 <table class="min-w-full border divide-y divide-gray-200">
                     <thead class="bg-gray-100">
                 <tr>
@@ -19,7 +19,7 @@
                     <th class="px-4 py-2 text-sm text-left">Имя</th>
                     <th class="px-4 py-2 text-sm text-left">Дата создания</th>
                     @auth()
-                        <th>Действия</th>
+                        <th class="px-4 py-2 text-sm text-left">Действия</th>
                     @endauth
                 </tr>
                 </thead>
