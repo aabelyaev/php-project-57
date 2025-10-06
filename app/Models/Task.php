@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Task extends Model
 {
     use HasFactory;
+
     protected $fillable = ['name', 'description', 'status_id', 'assigned_to_id'];
 
     public function status(): BelongsTo
