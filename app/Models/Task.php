@@ -12,14 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property int $id
  * @property string $name
  * @property string|null $description
- * @property int $status_id
- * @property int $created_by_id
- * @property int|null $assigned_to_id
- *
- * @property-read TaskStatus $status
- * @property-read User $creator
- * @property-read User|null $assignee
- * @property-read \Illuminate\Database\Eloquent\Collection|Label[] $labels
+ * @property-read \Illuminate\Database\Eloquent\Collection|Task[] $tasks
  */
 class Task extends Model
 {
