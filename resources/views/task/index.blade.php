@@ -56,36 +56,35 @@
                     @endauth
                 </div>
             </div>
-
-            <table class="mt-4">
-                <thead class="border-b-2 border-solid border-black text-left">
+            <div class="overflow-x-auto bg-white shadow rounded">
+            <table class="min-w-full border divide-y divide-gray-200">
+                <thead class="bg-gray-100">
                 <tr>
-                    <th>ID</th>
-                    <th>Статус</th>
-                    <th>Имя</th>
-                    <th>Автор</th>
-                    <th>Исполнитель</th>
-                    <th>Дата создания</th>
+                    <th class="px-4 py-2 text-sm text-left">ID</th>
+                    <th class="px-4 py-2 text-sm text-left">Статус</th>
+                    <th class="px-4 py-2 text-sm text-left">Имя</th>
+                    <th class="px-4 py-2 text-sm text-left">Автор</th>
+                    <th class="px-4 py-2 text-sm text-left">Исполнитель</th>
+                    <th class="px-4 py-2 text-sm text-left">Дата создания</th>
                     @auth()
                         <th>Действия</th>
                     @endauth
                 </tr>
                 </thead>
-                <tbody>
+                <tbody class="divide-y divide-gray-100">
                 @if(!empty($tasks))
                     @foreach($tasks as $task)
-                        <tr class="border-b border-dashed text-left">
-                            <td>{{ $task->id }}</td>
-                            <td>{{ $task->status->name }}</td>
-                            <td>
-                                <a class="text-blue-600 hover:text-blue-900"
-                                   href="{{ route('tasks.show', $task) }}">
+                        <tr>
+                            <td class="px-4 py-2 text-sm">{{ $task->id }}</td>
+                            <td class="px-4 py-2 text-sm">{{ $task->status->name }}</td>
+                            <td class="px-4 py-2 text-sm text-blue-600 hover:underline">
+                                <a href="{{ route('tasks.show', $task) }}">
                                     {{ $task->name }}
                                 </a>
                             </td>
-                            <td>{{ $task->createdBy->name }}</td>
-                            <td>{{ $task->assignedTo->name ?? '' }}</td>
-                            <td>{{ Carbon\Carbon::createFromDate($task->created_at)->format('d.m.Y') }}</td>
+                            <td class="px-4 py-2 text-sm">{{ $task->createdBy->name }}</td>
+                            <td class="px-4 py-2 text-sm">{{ $task->assignedTo->name ?? '' }}</td>
+                            <td class="px-4 py-2 text-sm">{{ Carbon\Carbon::createFromDate($task->created_at)->format('d.m.Y') }}</td>
                             <td>
                                 @auth
                                     @can('delete', $task)
@@ -102,7 +101,7 @@
                 @endif
                 </tbody>
             </table>
-
+            </div>
             <div class="mt-4">
                 {{ $tasks->links() }}
             </div>
