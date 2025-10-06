@@ -3,21 +3,24 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\Task;
+use App\Models\User;
+use App\Models\TaskStatus;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\TaskStatus>
- */
-class TaskStatusFactory extends Factory
+class TaskFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
-    public function definition(): array
+    protected $model = Task::class;
+
+    public function definition()
     {
         return [
-            'name' => fake()->name(),
+            'name' => $this->faker->sentence(3),
+            'description' => $this->faker->paragraph(),
+            'status_id' => TaskStatus::factory(),
+            'created_by_id' => User::factory(),
+            'assigned_to_id' => User::factory(),
+            'created_at' => now(),
+            'updated_at' => now(),
         ];
     }
 }
