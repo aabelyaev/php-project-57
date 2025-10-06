@@ -12,26 +12,27 @@
                 @endauth
             </div>
 
-            <table class="mt-4">
-                <thead class="border-b-2 border-solid border-black text-left">
+            <div style="margin-top: 20px" class="overflow-x-auto bg-white shadow rounded">
+                <table class="min-w-full border divide-y divide-gray-200">
+                    <thead class="bg-gray-100">
                 <tr>
-                    <th>ID</th>
-                    <th>Имя</th>
-                    <th>Описание</th>
-                    <th>Дата создания</th>
+                    <th class="px-4 py-2 text-sm text-left">ID</th>
+                    <th class="px-4 py-2 text-sm text-left">Имя</th>
+                    <th class="px-4 py-2 text-sm text-left">Описание</th>
+                    <th class="px-4 py-2 text-sm text-left">Дата создания</th>
                     @auth()
                         <th>Действия</th>
                     @endauth
                 </tr>
                 </thead>
-                <tbody>
+                <tbody class="divide-y divide-gray-100">
                 @if(!empty($labels))
                     @foreach($labels as $label)
                         <tr class="border-b border-dashed text-left">
-                            <td>{{ $label->id }}</td>
-                            <td>{{ $label->name }}</td>
-                            <td>{{ $label->description }}</td>
-                            <td>{{ Carbon\Carbon::createFromDate($label->created_at)->format('d.m.Y') }}</td>
+                            <td class="px-4 py-2 text-sm">{{ $label->id }}</td>
+                            <td class="px-4 py-2 text-sm">{{ $label->name }}</td>
+                            <td class="px-4 py-2 text-sm">{{ $label->description }}</td>
+                            <td class="px-4 py-2 text-sm">{{ Carbon\Carbon::createFromDate($label->created_at)->format('d.m.Y') }}</td>
                             <td>
                                 @auth
                                     <a rel="nofollow" data-confirm="Вы уверены?" data-method="delete"
@@ -46,7 +47,7 @@
                 @endif
                 </tbody>
             </table>
-
+            </div>
             <div class="mt-4">
                 {{ $labels->links() }}
             </div>

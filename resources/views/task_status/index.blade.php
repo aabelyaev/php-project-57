@@ -11,24 +11,25 @@
                 @endauth
             </div>
 
-            <table class="mt-4">
-                <thead class="border-b-2 border-solid border-black text-left">
+            <div style="margin-top: 20px" class="overflow-x-auto bg-white shadow rounded">
+                <table class="min-w-full border divide-y divide-gray-200">
+                    <thead class="bg-gray-100">
                 <tr>
-                    <th>ID</th>
-                    <th>Имя</th>
-                    <th>Дата создания</th>
+                    <th class="px-4 py-2 text-sm text-left">ID</th>
+                    <th class="px-4 py-2 text-sm text-left">Имя</th>
+                    <th class="px-4 py-2 text-sm text-left">Дата создания</th>
                     @auth()
                         <th>Действия</th>
                     @endauth
                 </tr>
                 </thead>
-                <tbody>
+                <tbody class="divide-y divide-gray-100">
                 @if(!empty($taskStatuses))
                     @foreach($taskStatuses as $taskStatus)
                         <tr class="border-b border-dashed text-left">
-                            <td>{{ $taskStatus->id }}</td>
-                            <td>{{ $taskStatus->name }}</td>
-                            <td>{{ Carbon\Carbon::createFromDate($taskStatus->created_at)->format('d.m.Y') }}</td>
+                            <td class="px-4 py-2 text-sm">{{ $taskStatus->id }}</td>
+                            <td class="px-4 py-2 text-sm">{{ $taskStatus->name }}</td>
+                            <td class="px-4 py-2 text-sm">{{ Carbon\Carbon::createFromDate($taskStatus->created_at)->format('d.m.Y') }}</td>
                             <td>
                                 @auth
                                     <a rel="nofollow" data-confirm="Вы уверены?" data-method="delete" class="text-red-600 hover:text-red-900" href="{{ route('task_statuses.destroy', $taskStatus) }}">Удалить</a>
@@ -39,7 +40,7 @@
                     @endforeach
                 @endif
                 </tbody></table>
-
+            </div>
             <div class="p-4">
                 {{ $taskStatuses->links() }}
             </div>

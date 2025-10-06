@@ -56,7 +56,7 @@
                     @endauth
                 </div>
             </div>
-            <div class="overflow-x-auto bg-white shadow rounded">
+            <div style="margin-top: 20px" class="overflow-x-auto bg-white shadow rounded">
             <table class="min-w-full border divide-y divide-gray-200">
                 <thead class="bg-gray-100">
                 <tr>
