@@ -20,7 +20,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // Используем config() или environment() для проверки
-        if (config('app.env') === 'production' || $this->app->environment('production')) {
+        if (config('app.env') === 'production' || env('APP_ENV') === 'production') {
             \Illuminate\Support\Facades\URL::forceScheme('https');
         }
     }
