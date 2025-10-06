@@ -12,24 +12,18 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->registerErrorHandling();
+        //
     }
 
     /**
      * Bootstrap any application services.
      */
-    public function boot(UrlGenerator $url)
+    public function boot(UrlGenerator $url): void
     {
         if (env('APP_ENV') == 'production') {
             $url->forceScheme('https');
+        } else {
+            $url->forceScheme('https');
         }
-    }
-
-    /**
-     * Configure the error handler.
-     */
-    protected function registerErrorHandling()
-    {
-        app('config')->set('app.debug', env('APP_DEBUG', false));
     }
 }
